@@ -1,25 +1,27 @@
 <?php
 //connection mysql
-require_once 'setting.php';
+$connection = new PDO("mysql:host=localhost;dbname=test", "tihun", "12345");
 
-$connection = new mysqli($host, $user, $pass, $database);
-if ($connection->connect_error) die('Error connection');
+//direct request
+//$query = "INSERT users (name, age, login, password) VALUE ('Igor', '22', 'igor', 'password')";
+//$count = $connection->exec($query);
+//
+//echo $count;
 
-//data request
-$query = 'SELECT * FROM users';
-$result = $connection->query($query);
+//request preparation
+$name = "Oly";
+$age = 34;
+$login = 'das2z';
+$pass = "advbcx2f2";
 
-if (!$result) die('Error SELECT');
+$param = [
+    'n' => $name,
+    'age' => $age,
+    'login' => $login,
+    'pass' => $pass
+];
 
-$rows = $result->num_rows;
-for ($i =0; $i < $rows; ++$i) {
-    $result->data_seek($i);
-    echo 'Name: ' . $result->fetch_assoc()["name"] . "<br>";
-}
+$sql = "INSERT users (name, age, login, password) VALUE (:n, :age, :login, :pass)";
+$query = $connection->prepare($sql);
 
-//echo '<pre>';
-//print_r($result->fetch_assoc());
-//echo '</pre>';
-
-$result->close();
-$connection->close();
+$query->execute($param);
